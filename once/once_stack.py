@@ -4,6 +4,8 @@ from aws_cdk import(
     core,
     aws_apigatewayv2 as apigw,
     aws_dynamodb as dynamodb,
+    aws_events as events,
+    aws_events_targets as targets,
     aws_lambda as lambda_,
     aws_s3 as s3)
 
@@ -30,6 +32,8 @@ class OnceStack(core.Stack):
             removal_policy=core.RemovalPolicy.DESTROY)
 
         self.api = apigw.HttpApi(self, 'once-api', api_name='once-api')
+
+        core.CfnOutput(self, 'api-url', value=self.api.url)
 
         self.get_upload_ticket_function = lambda_.Function(self, 'get-upload-ticket-function',
             function_name='once-get-upload-ticket',
@@ -73,4 +77,20 @@ class OnceStack(core.Stack):
             methods=[apigw.HttpMethod.GET],
             integration=download_and_delete_integration)
 
-        core.CfnOutput(self, 'api-url', value=self.api.url)
+        self.cleanup_function = lambda_.Function(self, 'delete-served-files-function',
+            function_name='once-delete-served-files',
+            runtime=lambda_.Runtime.PYTHON_3_7,
+            code=lambda_.Code.from_asset(os.path.join(BASE_PATH, 'delete-served-files')),
+            handler='handler.on_event',
+            description='Deletes files from S3 once they have been marked as deleted in DynamoDB',
+            environment={
+                'FILES_BUCKET': self.files_bucket.bucket_name,
+                'FILES_TABLE_NAME': self.files_table.table_name
+            })
+
+        self.files_bucket.grant_delete(self.cleanup_function)
+        self.files_table.grant_read_write_data(self.cleanup_function)
+
+        events.Rule(self, "once-delete-served-files-rule",
+            schedule=events.Schedule.rate(core.Duration.hours(24)),
+            targets=[targets.LambdaFunction(self.cleanup_function)])
