@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+setuptools = {editable = true, file = "file:///Users/domenico/dev/once"}
+"aws-cdk.core" = "*"
+"aws-cdk.aws-apigatewayv2" = "*"
+"aws-cdk.aws-dynamodb" = "*"
+"aws-cdk.aws-lambda" = "*"
+"aws-cdk.aws-s3" = "*"
+click = "*"
+requests = "*"
+Pygments = "*"
+
+[requires]
+python_version = "3.7"

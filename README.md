@@ -1,58 +1,33 @@
+# once: a one-time file sharing personal service
 
-# Welcome to your CDK Python project!
+It happens that I want to share a file with someone which is sensitive enough
+that I don't want to upload on a public free service.
+ 
+I would like to have something like transfer.sh, running
+ as a personal service, with the following features:
 
-This is a blank project for Python development with CDK.
+- it must be serverless (I'm not willing to pay except for the actual file storage, and only for the time strictly required)
+- it must return a link that I can share to anyone
+- file must be deleted as soon as it get *successfully downloaded*
+- it must expose a simple HTTP API, so *curl* should suffice to share a file
+- it must be protected with some form of authentication
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+With CDK I could create the following resources:
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the .env
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+- An S3 bucket to host the uploaded files
+- A Lambda function to implement the 'get-upload-ticket'
+- A Dynamodb table to store the information about the entries
+- Another Lambda function to implement a "smart" download handler, to delete the file after the very first successful transfer.
 
-To manually create a virtualenv on MacOS and Linux:
+I will use API Gateway to expose the lambda functions as an HTTP API.
 
-```
-$ python3 -m venv .env
-```
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+HERE BE DIAGRAM!
 
-```
-$ source .env/bin/activate
-```
 
-If you are a Windows platform, you would activate the virtualenv like this:
+    mkdir once
+    cd once
+    cdk init app
 
-```
-% .env\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+Then it should be easy to start organizing the project layout.
+One single stack, one folder for each lambda function.
