@@ -29,10 +29,9 @@ HERE BE DIAGRAM!
 [+] Set logs retention policy
 [+] Deploy custom domain as a nested stack
 [+] Mask link preview depending on the user agent
+[+] Add a robust authentication method
 
-- Add a robust authentication method
 - Add progressbar to client
-
 - Package application as a click app
 
 

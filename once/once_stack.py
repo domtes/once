@@ -77,6 +77,7 @@ class CustomDomainStack(cfn.NestedStack):
 
 class OnceStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str,
+            secret_key: str,
             custom_domain: Optional[str] = None,
             hosted_zone_id: Optional[str] = None,
             hosted_zone_name: Optional[str] = None,
@@ -113,7 +114,8 @@ class OnceStack(core.Stack):
             environment={
                 'APP_URL': api_url,
                 'FILES_TABLE_NAME': self.files_table.table_name,
-                'FILES_BUCKET': self.files_bucket.bucket_name
+                'FILES_BUCKET': self.files_bucket.bucket_name,
+                'SECRET_KEY': secret_key
             })
 
         self.files_bucket.grant_put(self.get_upload_ticket_function)

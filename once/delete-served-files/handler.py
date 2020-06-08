@@ -29,8 +29,8 @@ else:
 
 
 def on_event(event, context):
-    log.info(f'Event received: {event}')
-    log.info(f'Context is: {context}')
+    log.debug(f'Event received: {event}')
+    log.debug(f'Context is: {context}')
     log.debug(f'Debug mode is {DEBUG}')
     log.debug(f'Files bucket is "{FILES_BUCKET}"')
 

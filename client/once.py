@@ -3,9 +3,13 @@ Simple command to share one-time files
 '''
 
 import os
+import base64
+import hashlib
+import hmac
 import json
 import time
-import urllib
+from datetime import datetime
+from urllib.parse import quote_plus, urljoin
 
 import click
 import requests
@@ -13,6 +17,9 @@ from pygments import highlight, lexers, formatters
 
 
 ONCE_API_URL = os.getenv('ONCE_API_URL')
+ONCE_SECRET_KEY = base64.b64decode(os.getenv('ONCE_SECRET_KEY', 'ho/KbLqa65F4uKumCOl30SQwWh4hV7BqpuJVl7urq2XuxkvHmBk/QC9l53og0B3X3dSZun7zDYBH6MdOkjj6CQ=='))
+ONCE_SIGNATURE_HEADER = os.getenv('ONCE_SIGNATURE_HEADER', 'x-once-signature')
+ONCE_TIMESTAMP_FORMAT = os.getenv('ONCE_TIMESTAMP_FORMAT', '%Y%m%d%H%M%S%f')
 
 
 def highlight_json(obj):
@@ -29,12 +36,17 @@ def api_req(method: str, url: str, verbose: bool = False, **kwargs):
     if method not in ['get', 'post']:
         raise ValueError(f'Unsupported HTTP method "{method}"')
 
-    actual_url = f'{ONCE_API_URL}{url}'
+    actual_url = urljoin(ONCE_API_URL, url)
 
     if verbose:
         print(f'{method.upper()} {actual_url}')
 
-    response = getattr(requests, method)(actual_url, **kwargs)
+    req = requests.Request(method=method, url=actual_url, **kwargs).prepare()
+    plain_text = req.path_url.encode('utf-8')
+    hmac_obj = hmac.new(ONCE_SECRET_KEY, msg=plain_text, digestmod=hashlib.sha256)
+    req.headers[ONCE_SIGNATURE_HEADER] = base64.b64encode(hmac_obj.digest())
+
+    response = requests.Session().send(req)
 
     if verbose:
         print(f'Server response status: {response.status_code}')
@@ -48,7 +60,10 @@ def api_req(method: str, url: str, verbose: bool = False, **kwargs):
 @click.option('--verbose', '-v', is_flag=True, default=False, help='Enables verbose output.')
 def share(file: click.File, verbose: bool):
     entry = api_req('GET', '/',
-        params={'f': urllib.parse.quote_plus(os.path.basename(file.name))},
+        params={
+            'f': quote_plus(os.path.basename(file.name)),
+            't': datetime.utcnow().strftime(ONCE_TIMESTAMP_FORMAT)
+        },
         verbose=verbose).json()
 
     once_url = entry['once_url']

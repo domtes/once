@@ -44,8 +44,8 @@ else:
 
 
 def on_event(event, context):
-    log.info(f'Event received: {event}')
-    log.info(f'Context is: {context}')
+    log.debug(f'Event received: {event}')
+    log.debug(f'Context is: {context}')
     log.debug(f'Debug mode is {DEBUG}')
     log.debug(f'Files bucket is "{FILES_BUCKET}"')
 
@@ -58,7 +58,7 @@ def on_event(event, context):
         TableName=FILES_TABLE_NAME,
         Key={'id': {'S': entry_id}})
 
-    log.debug(f'This is the GET_ITEM response: {entry}')
+    log.debug(f'Matched Dynamodb entry: {entry}')
 
     if 'Item' not in entry or 'deleted' in entry['Item']:
         error_message = f'Entry not found: {object_name}'
