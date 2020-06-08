@@ -35,6 +35,7 @@ class ApiGatewayV2Domain(object):
             'hostedZoneId': self.domain_name.get_att('RegionalHostedZoneId').to_string()
         }
 
+
 class CustomDomainStack(cfn.NestedStack):
     def __init__(self, scope: core.Construct, id: str,
         hosted_zone_id: str,

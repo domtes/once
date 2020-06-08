@@ -5,6 +5,7 @@ Simple command to share one-time files
 import os
 import json
 import time
+import urllib
 
 import click
 import requests
@@ -47,7 +48,7 @@ def api_req(method: str, url: str, verbose: bool = False, **kwargs):
 @click.option('--verbose', '-v', is_flag=True, default=False, help='Enables verbose output.')
 def share(file: click.File, verbose: bool):
     entry = api_req('GET', '/',
-        params={'f': os.path.basename(file.name)},
+        params={'f': urllib.parse.quote_plus(os.path.basename(file.name))},
         verbose=verbose).json()
 
     once_url = entry['once_url']

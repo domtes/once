@@ -6,8 +6,8 @@ import logging
 import os
 import random
 import string
+import urllib
 from typing import Dict
-from urllib.parse import quote_plus, urlencode
 
 import boto3
 import requests
@@ -61,7 +61,7 @@ def on_event(event, context):
     log.debug(f'Pre-signed urls will expire after {EXPIRATION_TIMEOUT} seconds')
 
     q = event.get('queryStringParameters', {})
-    filename = q.get('f')
+    filename = urllib.parse.unquote_plus(q.get('f'))
     response_code = 200
     response = {}
     try:
@@ -71,7 +71,7 @@ def on_event(event, context):
         domain = string.ascii_uppercase + string.ascii_lowercase + string.digits
         entry_id = ''.join(random.choice(domain) for _ in range(6))
         object_name = f'{entry_id}/{filename}'
-        response['once_url'] = f'{APP_URL}{entry_id}/{filename}'
+        response['once_url'] = f'{APP_URL}{entry_id}/{urllib.parse.quote(filename)}'
 
         dynamodb = boto3.client('dynamodb')
         dynamodb.put_item(

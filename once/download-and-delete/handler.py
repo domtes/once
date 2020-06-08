@@ -3,6 +3,7 @@ import io
 import json
 import logging
 import re
+import urllib
 
 import boto3
 
@@ -49,7 +50,7 @@ def on_event(event, context):
     log.debug(f'Files bucket is "{FILES_BUCKET}"')
 
     entry_id = event['pathParameters']['entry_id']
-    filename = event['pathParameters']['filename']
+    filename = urllib.parse.unquote_plus(event['pathParameters']['filename'])
     object_name = f'{entry_id}/{filename}'
 
     dynamodb = boto3.client('dynamodb')
