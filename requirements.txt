@@ -1,8 +1,12 @@
 -e .
 aws_cdk.core
 aws_cdk.aws_apigatewayv2
+aws_cdk.aws_certificatemanager
+aws_cdk.aws_cloudformation
 aws_cdk.aws_dynamodb
 aws_cdk.aws_events
 aws_cdk.aws_events_targets
 aws_cdk.aws_lambda
+aws_cdk.aws_logs
+aws_cdk.aws_route53
 aws_cdk.aws_s3

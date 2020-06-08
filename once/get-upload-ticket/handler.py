@@ -66,9 +66,7 @@ def on_event(event, context):
     response = {}
     try:
         if filename is None:
-            raise BadRequestError(
-                'Please provide a valid value for the `filename_prefix` '
-                'query parameter')
+            raise BadRequestError('Provide a valid value for the `f` query parameter')
 
         domain = string.ascii_uppercase + string.ascii_lowercase + string.digits
         entry_id = ''.join(random.choice(domain) for _ in range(6))

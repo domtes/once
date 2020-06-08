@@ -21,13 +21,26 @@ With CDK I could create the following resources:
 
 I will use API Gateway to expose the lambda functions as an HTTP API.
 
-
 HERE BE DIAGRAM!
 
+## TODO
 
-    mkdir once
-    cd once
-    cdk init app
+[+] Publish it to a custom domain name: DONE
+[+] Set logs retention policy
+[+] Deploy custom domain as a nested stack
+[+] Mask link preview depending on the user agent
 
-Then it should be easy to start organizing the project layout.
-One single stack, one folder for each lambda function.
+- Add a robust authentication method
+- Add progressbar to client
+
+- Package application as a click app
+
+
+
+- Write a proper README with instructions
+- Record a demo
+- write tests with pytest
+
+- publish the source code
+- write a blog post
+- add a link to the blog post in the README

@@ -2,6 +2,7 @@ import os
 import io
 import json
 import logging
+import re
 
 import boto3
 
@@ -18,6 +19,20 @@ DEBUG = is_debug_enabled()
 FILES_BUCKET = os.getenv('FILES_BUCKET')
 FILES_TABLE_NAME = os.getenv('FILES_TABLE_NAME')
 PRESIGNED_URL_EXPIRES_IN = int(os.getenv('PRESIGNED_URL_EXPIRES_IN', 20))
+MASKED_USER_AGENTS = os.getenv('MASKED_USER_AGENTS', ','.join([
+    '^Facebook.*',
+    '^Google.*',
+    '^Instagram.*',
+    '^LinkedIn.*',
+    '^Outlook.*',
+    '^Reddit.*',
+    '^Slack.*',
+    '^Skype.*',
+    '^SnapChat.*',
+    '^Telegram.*',
+    '^Twitter.*',
+    '^WhatsApp.*'
+])).split(',')
 
 
 log = logging.getLogger()
@@ -49,6 +64,17 @@ def on_event(event, context):
         log.info(error_message)
         return {'statusCode': 404, 'body': error_message}
 
+    # Some rich clients try to get a preview of any link pasted
+    # into text controls.
+    user_agent = event['headers'].get('user-agent', '')
+    is_masked_agent = any([re.match(agent, user_agent) for agent in MASKED_USER_AGENTS])
+    if is_masked_agent:
+        log.info('Serving possible link preview. Download prevented.')
+        return {
+            'statusCode': 200,
+            'headers': {}
+        }
+
     s3 = boto3.client('s3')
     download_url = s3.generate_presigned_url(
         'get_object',
@@ -69,4 +95,3 @@ def on_event(event, context):
             'Location': download_url
         }
     }
-
