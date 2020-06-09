@@ -173,5 +173,6 @@ def on_event(event, context):
     finally:
         return {
             'statusCode': response_code,
+            'headers': {'Content-Type': 'application/json'},
             'body': json.dumps(response)
         }
