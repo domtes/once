@@ -12,6 +12,8 @@ It can be easily provisioned to a private AWS account and it has been designed t
 
 ## Deploying on AWS
 
+[![asciicast](https://asciinema.org/a/338371.svg)](https://asciinema.org/a/338371)
+
 *once* is implemented using the [AWS CloudDevelopment Kit](https://docs.aws.amazon.com/cdk/) framework, and can be easily deployed as a self-contained CloudFormation stack to any AWS account.
 
 Make sure you have installed the latest CDK version for your platform, following the steps described in the [official getting started guide](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html).
@@ -69,6 +71,8 @@ Once the service and the client have been correctly installed and configured, yo
     once <file_toshare>
 
 The URL can be shared to download the file, only once.
+
+[![asciicast](https://asciinema.org/a/338383.svg)](https://asciinema.org/a/338383)
 
 ## Uninstalling
 
