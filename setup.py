@@ -7,7 +7,7 @@ with open("README.md") as fp:
 
 setuptools.setup(
     name="once",
-    description="An one-time file sharing personal service, running serverless on AWS",
+    description="A one-time file sharing personal service, running serverless on AWS",
     version="0.1.0",
     url="https://github.com/domtes/once",
     author="Domenico Testa",
@@ -33,7 +33,7 @@ setuptools.setup(
 
         "Intended Audience :: Developers",
 
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: MIT License",
 
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.6",
