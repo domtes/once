@@ -4,6 +4,7 @@ Simple command to share one-time files
 
 import os
 import base64
+import configparser
 import hashlib
 import hmac
 import json
@@ -16,10 +17,9 @@ import requests
 from pygments import highlight, lexers, formatters
 
 
-ONCE_API_URL = os.getenv('ONCE_API_URL')
-ONCE_SECRET_KEY = base64.b64decode(os.getenv('ONCE_SECRET_KEY', 'ho/KbLqa65F4uKumCOl30SQwWh4hV7BqpuJVl7urq2XuxkvHmBk/QC9l53og0B3X3dSZun7zDYBH6MdOkjj6CQ=='))
-ONCE_SIGNATURE_HEADER = os.getenv('ONCE_SIGNATURE_HEADER', 'x-once-signature')
-ONCE_TIMESTAMP_FORMAT = os.getenv('ONCE_TIMESTAMP_FORMAT', '%Y%m%d%H%M%S%f')
+ONCE_CONFIG_FILE = os.getenv('ONCE_CONFIG_FILE', os.path.expanduser('~/.once'))
+ONCE_SIGNATURE_HEADER = 'x-once-signature'
+ONCE_TIMESTAMP_FORMAT = '%Y%m%d%H%M%S%f'
 
 
 def highlight_json(obj):
@@ -31,19 +31,34 @@ def echo_obj(obj):
     click.echo(highlight_json(obj))
 
 
+def get_config(config_file: str = ONCE_CONFIG_FILE) -> configparser.ConfigParser:
+    if not os.path.exists(config_file):
+        raise ValueError(f'Config file not found at {config_file}')
+    config = configparser.ConfigParser()
+    config.read(ONCE_CONFIG_FILE)
+    return config
+
+
 def api_req(method: str, url: str, verbose: bool = False, **kwargs):
+    config = get_config()
+    if not config.has_option('once', 'base_url'):
+        raise ValueError(f'Configuration file at {ONCE_CONFIG_FILE} misses `base_url` option')
+
+    base_url = os.getenv('ONCE_API_URL', config['once']['base_url'])
+    secret_key = base64.b64decode(os.getenv('ONCE_SECRET_KEY', config['once']['secret_key']))
+
     method = method.lower()
     if method not in ['get', 'post']:
         raise ValueError(f'Unsupported HTTP method "{method}"')
 
-    actual_url = urljoin(ONCE_API_URL, url)
+    actual_url = urljoin(base_url, url)
 
     if verbose:
         print(f'{method.upper()} {actual_url}')
 
     req = requests.Request(method=method, url=actual_url, **kwargs).prepare()
     plain_text = req.path_url.encode('utf-8')
-    hmac_obj = hmac.new(ONCE_SECRET_KEY, msg=plain_text, digestmod=hashlib.sha256)
+    hmac_obj = hmac.new(secret_key, msg=plain_text, digestmod=hashlib.sha256)
     req.headers[ONCE_SIGNATURE_HEADER] = base64.b64encode(hmac_obj.digest())
 
     response = requests.Session().send(req)

@@ -7,22 +7,26 @@ with open("README.md") as fp:
 
 setuptools.setup(
     name="once",
-    version="0.0.1",
-
-    description="An one-time file sharing personal service",
+    description="An one-time file sharing personal service, running serverless on AWS",
+    version="0.1.0",
+    url="https://github.com/domtes/once",
+    author="Domenico Testa",
+    author_email="domenico.testa@gmail.com",
     long_description=long_description,
     long_description_content_type="text/markdown",
 
-    author="Domenico Testa",
-
-    package_dir={"": "once"},
-    packages=setuptools.find_packages(where="once"),
-
+    python_requires=">=3.6",
     install_requires=[
-        "aws-cdk.core==1.44.0",
+        "click",
+        "pygments",
+        "requests"
     ],
 
-    python_requires=">=3.6",
+    package_dir={'': 'client'},
+    py_modules=['once'],
+    entry_points={
+        'console_scripts': ['once=once:share']
+    },
 
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -31,13 +35,12 @@ setuptools.setup(
 
         "License :: OSI Approved :: Apache Software License",
 
-        "Programming Language :: JavaScript",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
 
-        "Topic :: Software Development :: Code Generators",
+        "Topic :: File Sharing",
         "Topic :: Utilities",
 
         "Typing :: Typed",

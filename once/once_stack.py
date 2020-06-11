@@ -102,7 +102,7 @@ class OnceStack(core.Stack):
         if custom_domain is not None:
             api_url = f'https://{custom_domain}/'
 
-        core.CfnOutput(self, 'api-url', value=api_url)
+        core.CfnOutput(self, 'base-url', value=api_url)
 
         self.get_upload_ticket_function = lambda_.Function(self, 'get-upload-ticket-function',
             function_name='once-get-upload-ticket',
