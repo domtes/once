@@ -2,7 +2,7 @@
 
 *once* is a personal cloud service that enables you to upload a local file of any size and get a link in return.
 
-This link will allow *one single* dowload operation, deleting the file once it has been successfully transferred.
+This link will allow *one single* download operation, deleting the file once it has been successfully transferred.
 
 *once* is designed to run on AWS using only *serverless* components.
 
