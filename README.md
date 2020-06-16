@@ -10,6 +10,8 @@ This link will allow *one single* download operation, deleting the file once it 
 
 It can be easily provisioned to a private AWS account and it has been designed to have a negligible footprint on the bill.
 
+You can read [this blog post](https://doesntwork.me/post/building-a-one-time-file-sharing-personal-service/) to get some background information.
+
 ## Deploying on AWS
 
 [![asciicast](https://asciinema.org/a/338371.svg)](https://asciinema.org/a/338371)
