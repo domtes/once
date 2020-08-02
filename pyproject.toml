@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "once"
+version = "0.1.0"
+description = "A one-time file sharing personal service, running serverless on AWS"
+authors = ["Domenico Testa"]
+license = "MIT"
+packages = [
+    { include = "client/*.py" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+"click" = "^7.1"
+"requests" = "^2.24"
+"Pygments" = "^2.6"
+
+[tool.poetry.dev-dependencies]
+"aws-cdk.core" = "^1.56"
+"aws-cdk.aws-apigatewayv2" = "^1.56"
+"aws-cdk.aws-dynamodb" = "^1.56"
+"aws-cdk.aws-lambda" = "^1.56"
+"aws-cdk.aws-s3" = "^1.56"
+"aws-cdk.aws-certificatemanager" = "^1.56"
+"aws-cdk.aws-cloudformation" = "^1.56"
+"aws-cdk.aws-events" = "^1.56"
+"aws-cdk.aws-events-targets" = "^1.56"
+"aws-cdk.aws-logs" = "^1.56"
+"aws-cdk.aws-route53" = "^1.56"
+
+[tool.poetry.scripts]
+once = 'client:share'
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
