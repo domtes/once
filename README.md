@@ -22,7 +22,7 @@ Make sure you have installed the latest CDK version for your platform, following
 
 Install the required dependencies (you can use a virtualenv for this), with the following command:
 
-    pip install -r requirements.txt
+    poetry install
 
 The deployment can be then initiated, from the project root directory, with the following command:
 
@@ -64,13 +64,9 @@ If you need more details about creating a public hosted zone on AWS, consult the
 
 ## Uploading a file
 
-To make the `once` command available you can install it using pip, with the following command:
-
-    $ pip install .
-
 Once the service and the client have been correctly installed and configured, you can upload a local file running the `once` command.
 
-    once <file_toshare>
+    poetry run once <file_toshare>
 
 The URL can be shared to download the file, only once.
 
