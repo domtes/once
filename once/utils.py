@@ -87,9 +87,10 @@ def make_python_zip_bundle(input_path: str,
 
         # builds requirements using target runtime
         build_log = execute_shell_command(command=[
-            'docker', 'run', '--rm',
+            docker, 'run', '--rm',
             '-v', f'{input_path}:/app',
             '-w', '/app',
+            '-u', '$(id -u):$(id -g)',
             lambda_runtime_docker_image,
                 'pip', 'install',
                 '-r', requirements_file,
